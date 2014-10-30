@@ -84,8 +84,6 @@ class JsonEventSubscriber implements EventSubscriberInterface
         $embeddeds = $this->embeddedsFactory->create($object, $context);
         $links     = $this->linksFactory->create($object, $context);
 
-        $jsonSerializer = $this->serializerRegistry->get($serializerName);
-
         $embeddeds = $this->embeddedsInlineDeferrer->handleItems($object, $embeddeds, $context);
         $links  = $this->linksInlineDeferrer->handleItems($object, $links, $context);
 
@@ -93,6 +91,8 @@ class JsonEventSubscriber implements EventSubscriberInterface
         if ($context instanceof HateoasSerializationContext) {
             $serializerName = $context->getJsonSerializerName();
         }
+
+        $jsonSerializer = $this->serializerRegistry->get($serializerName);
 
         if (count($links) > 0) {
             $jsonSerializer->serializeLinks($links, $event->getVisitor(), $context);
